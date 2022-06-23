@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {useState} from 'react'
 
+
 export default function () {
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
@@ -12,22 +13,15 @@ export default function () {
     setPrice(e.target.value)
   }
 
-  function handleSubmit(e){
+  async function handleSubmit(e){
     e.preventDefault() // stop the default request being emitted by the browser
 
-    console.log(name, price)
+    const resultat = await axios.post("http://localhost:3001/reseller/add-product",{
+    name,
+    price
+    }) 
 
-   // EXO : make an http request to our products API
-
-    // installer axios
-
-    // démarrer son serveur back 
-
-    // lancer une requête POST vers le endpoint nécessaire pour créer un produit
-
-    axios.post() // cf ici : https://axios-http.com/docs/post_example
-
-    // observer la réponse
+    console.log(resultat)
   }
 
   return (
