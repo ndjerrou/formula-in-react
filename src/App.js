@@ -1,7 +1,7 @@
-import Formula from './components/Formula';
+import Homepage from './pages/Homepage';
 
 function App() {
-  return <Formula />;
+  return <Homepage />;
 }
 
 export default App;

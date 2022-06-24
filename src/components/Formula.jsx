@@ -49,8 +49,6 @@ export default  function () {
     // })
     const filteredProducts = products.filter(product => product.id !== id)
 
-
-
     // provoquer un rerender ==> modifier un state
     setProducts(filteredProducts)
   }
@@ -74,6 +72,8 @@ export default  function () {
 
   return (
     <div>
+            <h1 className="title">Je suis un titre</h1>
+
       <form onSubmit={handleSubmit}>
         <div>
           <label>Nom du produit<input value={name} onChange={handleChangeName}/>
@@ -92,13 +92,3 @@ export default  function () {
     </div>
   );
 }
-
-// EX - supprimer un produit affiché
-
-// Ajouter un bouton/icone à côté de mon produit
-
-// Récupérer le clic sur ce bouton/icone
-
-// Déclencher une requête vers le back pour supprimer ce produit
-
-// Question : le produit est supprimé du back, comment refléter ça côté
