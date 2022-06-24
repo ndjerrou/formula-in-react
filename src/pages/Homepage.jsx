@@ -4,8 +4,9 @@ import Formula from "../components/Formula"
 function Homepage(){
     return (
         <>
-            <Formula />
             <Navbar />
+            <Formula />
+
         </>
     )
 }

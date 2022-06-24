@@ -2,11 +2,12 @@ import axios from 'axios'
 import {useState, useEffect} from 'react'
 
 import './Formula.css'
+import Products from './Products'
 
 
 
 
-export default  function () {
+function Formula() {
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
 
@@ -63,17 +64,11 @@ export default  function () {
     }) 
   }
 
-  const jsx = products.map((product)=> <div>
-  <div class="products"><li>{product.name} - {product.price} €</li> - 
-  <i class="fa-solid fa-trash-can" onClick={()=>handleDelete(product.id)}></i>
-  </div>
-</div>)
+
   
 
   return (
     <div>
-            <h1 className="title">Je suis un titre</h1>
-
       <form onSubmit={handleSubmit}>
         <div>
           <label>Nom du produit<input value={name} onChange={handleChangeName}/>
@@ -85,10 +80,11 @@ export default  function () {
           </div>
         <button>Créer mon produit</button>
       </form>
-      <div>
-        <h2>Mes produits à vendre</h2>
-        {products.length ? <ul>{jsx}</ul> : <p>Plus de stock disponible</p>}
+      <div> 
+        {products.length ? <ul>{<Products products={products} onDelete={handleDelete}/>}</ul> : <p>Plus de stock disponible</p>}
       </div>
     </div>
   );
 }
+
+export default Formula
