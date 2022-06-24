@@ -1,6 +1,7 @@
 import axios from 'axios'
 import {useState, useEffect} from 'react'
 
+import './Formula.css'
 
 
 
@@ -9,7 +10,7 @@ export default  function () {
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
 
-  const [products, setProducts] = useState(null)
+  const [products, setProducts] = useState([])
 
 
   useEffect( ()=>{
@@ -31,15 +32,29 @@ export default  function () {
   getProducts()
   }, [])
 
-  console.log('render formula C')
-
-
   function handleChangeName(e){
     setName(e.target.value)
   }
   function handleChangePrice(e){
     setPrice(e.target.value)
   }
+
+  async function handleDelete(id){
+    await axios.delete(`http://localhost:3001/reseller/delete-product/${id}`)
+
+    // const filteredProducts = products.filter(product=>{
+    //   const bool = product.id !== id // true si le produit durant ce tour possède un id différent // false sinon
+
+    //   return bool
+    // })
+    const filteredProducts = products.filter(product => product.id !== id)
+
+
+
+    // provoquer un rerender ==> modifier un state
+    setProducts(filteredProducts)
+  }
+
 
   async function handleSubmit(e){
     e.preventDefault() // stop the default request being emitted by the browser
@@ -49,6 +64,13 @@ export default  function () {
     price
     }) 
   }
+
+  const jsx = products.map((product)=> <div>
+  <div class="products"><li>{product.name} - {product.price} €</li> - 
+  <i class="fa-solid fa-trash-can" onClick={()=>handleDelete(product.id)}></i>
+  </div>
+</div>)
+  
 
   return (
     <div>
@@ -65,10 +87,7 @@ export default  function () {
       </form>
       <div>
         <h2>Mes produits à vendre</h2>
-        {products && <ul>
-          { products.map((product)=><li>{product.name} - {product.price} €</li>)}
-      </ul>
-      }
+        {products.length ? <ul>{jsx}</ul> : <p>Plus de stock disponible</p>}
       </div>
     </div>
   );
@@ -82,4 +101,4 @@ export default  function () {
 
 // Déclencher une requête vers le back pour supprimer ce produit
 
-// Question : le produit est supprimé du back, comment refléter ça côté front ?
+// Question : le produit est supprimé du back, comment refléter ça côté
