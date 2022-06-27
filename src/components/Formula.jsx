@@ -4,12 +4,21 @@ import env from "react-dotenv";
 
 import './Formula.css'
 import Products from './Products'
+import UpdateProduct from './UpdateProduct';
 
 function Formula() {
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
+  const [isUpdate, setIsUpdate] = useState(false)
 
   const [products, setProducts] = useState([])
+  const [product, setProduct] = useState({})
+
+    //state for UpdateProduct
+    const [formData, setFormData] = useState({
+      name: "",
+      price: ""
+  })
 
   const client = axios.create({
     baseURL: `http://localhost:${env.PORT_SERVER}`,
@@ -19,13 +28,11 @@ function Formula() {
 
   useEffect( ()=>{
     // with the [], get fired once the component is mounted into the DOM
-    console.log('after mounted into the dom')
 
   // // getting the products...
 
   async function getProducts(){
     try{
-      console.log(`/reseller/list-products`)
       const result = await client.get(`/reseller/list-products`) //side-effects
       setProducts(result.data) // provquer un re-render = la fonction du composant s'éxécute à nouveau
     }
@@ -36,9 +43,9 @@ function Formula() {
 
   getProducts()
   }, [])
-
+  
   function handleChangeName(e){
-    setName(e.target.value)
+     setName(e.target.value)
   }
   function handleChangePrice(e){
     setPrice(e.target.value)
@@ -69,15 +76,39 @@ function Formula() {
   }
 
   function handleSelect(e){
-    console.log(e.target.value)
+    e.target.selectedIndex ? setIsUpdate(true) : setIsUpdate(false)
+
+    const product = products.find(product=>product.id === +e.target.value)
+
+    setProduct(product)
+    setFormData(product)
   }
-  
+
+    const handleChangeToUpdate = (e) => {
+        console.log(e.target.name)
+        console.log(e.target.value)
+        setFormData(
+            prevState => (
+                {
+                    ...prevState,
+                    [e.target.name]: e.target.value
+                }
+            )
+        )
+    }
+
+    const handleSubmitToUpdate = (e) => {
+        e.preventDefault()
+
+        console.log('handle submit')
+        console.log(formData)
+    }
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Nom du produit<input value={name} onChange={handleChangeName}/>
+          <label>Nom du produit<input value={name} onInput={handleChangeName}/>
           </label>
           </div>
         <div>
@@ -91,10 +122,24 @@ function Formula() {
       </div>
       <h3>Updater un produit</h3>
       <select onChange={handleSelect}>
-        <option name="produit" value="Nissim">P1</option>
-        <option name="produit" value="Marie">P2</option>
-        <option name="produit" value="Pierre">P3</option>
+        <option defaultValue>--Choisir un produit--</option>
+        {
+          products.map((product)=>{
+            return <option value={product.id} key={product.id}>{product.name}</option>
+          }) 
+        }
+      {/* 
+        {
+          products.map((product)=><option>{product.name}</option>)
+        } */
+      }
       </select>
+      {isUpdate && <UpdateProduct 
+        product={product}
+        formData={formData}
+        onChange={handleChangeToUpdate}
+        onSubmit={handleSubmitToUpdate}
+      />}
     </div>
   );
 }

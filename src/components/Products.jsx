@@ -8,6 +8,7 @@ function Products({products, onDelete}){
                  products.map(
                     (product)=> (
                         <Product 
+                            key={product.id}
                             product={product}
                             onDelete={onDelete}
                         />))
