@@ -1,17 +1,20 @@
 import axios from 'axios'
 import {useState, useEffect} from 'react'
+import env from "react-dotenv";
 
 import './Formula.css'
 import Products from './Products'
-
-
-
 
 function Formula() {
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
 
   const [products, setProducts] = useState([])
+
+  const client = axios.create({
+    baseURL: `http://localhost:${env.PORT_SERVER}`,
+    timeout: 1000,
+  });
 
 
   useEffect( ()=>{
@@ -22,7 +25,8 @@ function Formula() {
 
   async function getProducts(){
     try{
-      const result = await axios.get("http://localhost:3001/reseller/list-products") //side-effects
+      console.log(`/reseller/list-products`)
+      const result = await client.get(`/reseller/list-products`) //side-effects
       setProducts(result.data) // provquer un re-render = la fonction du composant s'éxécute à nouveau
     }
     catch(err){
@@ -41,7 +45,7 @@ function Formula() {
   }
 
   async function handleDelete(id){
-    await axios.delete(`http://localhost:3001/reseller/delete-product/${id}`)
+    await client.delete(`/reseller/delete-product/${id}`)
 
     // const filteredProducts = products.filter(product=>{
     //   const bool = product.id !== id // true si le produit durant ce tour possède un id différent // false sinon
@@ -57,14 +61,16 @@ function Formula() {
 
   async function handleSubmit(e){
     e.preventDefault() // stop the default request being emitted by the browser
-
-    const resultat = await axios.post("http://localhost:3001/reseller/add-product",{
+    console.log(`/reseller/add-product`)
+    const resultat = await client.post(`/reseller/add-product`,{
     name,
     price
     }) 
   }
 
-
+  function handleSelect(e){
+    console.log(e.target.value)
+  }
   
 
   return (
@@ -83,6 +89,12 @@ function Formula() {
       <div> 
         {products.length ? <ul>{<Products products={products} onDelete={handleDelete}/>}</ul> : <p>Plus de stock disponible</p>}
       </div>
+      <h3>Updater un produit</h3>
+      <select onChange={handleSelect}>
+        <option name="produit" value="Nissim">P1</option>
+        <option name="produit" value="Marie">P2</option>
+        <option name="produit" value="Pierre">P3</option>
+      </select>
     </div>
   );
 }
